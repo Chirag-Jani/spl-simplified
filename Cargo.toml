@@ -2,10 +2,11 @@
 name = "spl-simplified"
 description = "Simplified Version of the SPL Token."
 version = "0.1.0"
-authors = ["jani"]
+authors = ["Chirag Jani"]
 edition = "2021"
 license = "Apache-2.0"
 resolver = "1"
+repository = "https://github.com/Chirag-Jani/spl-simplified.git"
 
 [dependencies.solana-program]
 version = "1.16"
