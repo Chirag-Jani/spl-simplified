@@ -1,0 +1,42 @@
+[package]
+name = "spl-simplified"
+description = "Simplified Version of the SPL Token."
+version = "0.1.0"
+authors = ["jani"]
+edition = "2021"
+license = "Apache-2.0"
+resolver = "1"
+
+[dependencies.solana-program]
+version = "1.16"
+
+[dependencies.spl-token]
+version = "*"
+features = ["no-entrypoint"]
+optional = true
+
+[dependencies.anchor-lang]
+version = "0.29.0"
+features = ["derive", "init-if-needed"]
+
+[dependencies.borsh]
+version = ">=0.9, <0.11"
+optional = true
+
+[dependencies.mpl-token-metadata]
+version = "3.2.3"
+optional = true
+
+[dependencies.spl-associated-token-account]
+version = "=3.0.4"
+features = ["no-entrypoint"]
+optional = true
+
+[features]
+associated_token = ["spl-associated-token-account"]
+default = ["associated_token", "mint", "token"]
+idl-build = ["anchor-lang/idl-build"]
+metadata = ["mpl-token-metadata"]
+mint = []
+stake = ["borsh"]
+token = ["spl-token"]
