@@ -12,7 +12,7 @@ repository = "https://github.com/Chirag-Jani/spl-simplified.git"
 version = "1.16"
 
 [dependencies.spl-token]
-version = "*"
+version = "4"
 features = ["no-entrypoint"]
 optional = true
 
