@@ -2123,10 +2123,10 @@ dependencies = [
 
 [[package]]
 name = "spl-simplified"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anchor-lang",
- "borsh 0.10.4",
+ "borsh 0.9.3",
  "mpl-token-metadata",
  "solana-program",
  "spl-associated-token-account",
