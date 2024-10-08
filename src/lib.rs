@@ -6,3 +6,6 @@ pub mod metadata;
 
 #[cfg(feature = "token")]
 pub mod token;
+
+#[cfg(feature = "simplespl")]
+pub mod simplespl;
