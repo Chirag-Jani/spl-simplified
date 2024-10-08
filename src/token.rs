@@ -451,7 +451,7 @@ impl anchor_lang::AccountDeserialize for TokenAccount {
     fn try_deserialize_unchecked(buf: &mut &[u8]) -> anchor_lang::Result<Self> {
         spl_token::state::Account::unpack(buf)
             .map(TokenAccount)
-            .map_err(into::into)
+            .map_err(Into::into)
     }
 }
 
