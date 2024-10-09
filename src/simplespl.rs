@@ -46,7 +46,7 @@ pub mod simple_token {
         signer_seeds: &[&[u8]],
         amount: u64,
     ) -> Result<()> {
-        let ix = spl_token::instruction::mint_to(
+        /*   let ix = spl_token::instruction::mint_to(
             &spl_token::ID,
             &mint.key(),
             &to.key(),
@@ -60,7 +60,8 @@ pub mod simple_token {
             &[token_program, mint, to, authority],
             &[signer_seeds],
         )
-        .map_err(Into::into)
+        .map_err(Into::into) */
+        Ok(())
     }
 }
 
