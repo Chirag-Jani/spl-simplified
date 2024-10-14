@@ -3,6 +3,7 @@ use anchor_lang::solana_program::pubkey::Pubkey;
 use anchor_lang::Key;
 use anchor_lang::{context::CpiContext, Accounts};
 use anchor_lang::{solana_program, Result};
+use solana_program::program::invoke_signed;
 pub use spl_token;
 pub use spl_token::ID;
 pub use std::time::UNIX_EPOCH;
@@ -48,13 +49,15 @@ pub fn mint_simple<'info>(
         amount,
     )?;
 
-    solana_program::program::invoke_signed(
+    invoke_signed(
         &ix,
-        &[token_program, mint, to, authority],
+        &[mint.clone(), to.clone(), authority.clone(), token_program],
         &[signer_seeds],
-    )
-    .map_err(Into::into)
-    // Ok(())
+    )?;
+
+    // .map_err(Into::into);
+
+    Ok(())
 }
 
 #[derive(Accounts)]
