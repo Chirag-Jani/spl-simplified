@@ -4,13 +4,7 @@ use anchor_lang::Key;
 use anchor_lang::{context::CpiContext, Accounts};
 use anchor_lang::{solana_program, Result};
 use solana_program::program::invoke_signed;
-pub use spl_token;
 pub use spl_token::ID;
-pub use std::time::UNIX_EPOCH;
-
-pub fn get_number() -> Result<u64> {
-    Ok(200)
-}
 
 pub fn mint_to<'info>(
     ctx: CpiContext<'_, '_, '_, 'info, MintTo<'info>>,
@@ -24,7 +18,7 @@ pub fn mint_to<'info>(
         &[],
         amount,
     )?;
-    solana_program::program::invoke_signed(
+    invoke_signed(
         &ix,
         &[ctx.accounts.to, ctx.accounts.mint, ctx.accounts.authority],
         ctx.signer_seeds,

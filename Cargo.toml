@@ -9,7 +9,6 @@ resolver = "1"
 repository = "https://github.com/Chirag-Jani/spl-simplified.git"
 
 [dependencies]
-chrono = "0.4.38"
 
 [dependencies.anchor-lang]
 version = "0.29.0"
