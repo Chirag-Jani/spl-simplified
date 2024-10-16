@@ -3,7 +3,7 @@ use anchor_lang::solana_program::pubkey::Pubkey;
 use anchor_lang::Key;
 use anchor_lang::{context::CpiContext, Accounts};
 use anchor_lang::{solana_program, Result};
-use mpl_token_metadata::types::DataV2;
+use mpl_token_metadata::types::{Creator, DataV2};
 use solana_program::program::invoke_signed;
 pub use spl_token::ID;
 
@@ -42,10 +42,9 @@ pub fn mint_simple<'info>(
     system_program: AccountInfo<'info>,
     rent: AccountInfo<'info>,
     token_program: AccountInfo<'info>,
-    ////
     mint: AccountInfo<'info>,
     to: AccountInfo<'info>,
-    authority: AccountInfo<'info>,
+    owner: AccountInfo<'info>,
     signer_seeds: &[&[u8]],
     amount: u64,
 ) -> Result<()> {
@@ -69,24 +68,21 @@ pub fn mint_simple<'info>(
         &spl_token::ID,
         &mint.key(),
         &to.key(),
-        &authority.key(),
+        &owner.key(),
         &[],
         amount,
     )?;
 
     invoke_signed(
         &ix,
-        &[mint.clone(), to.clone(), authority.clone(), token_program],
+        &[mint.clone(), to.clone(), owner.clone(), token_program],
         &[signer_seeds],
     )?;
-
-    // .map_err(Into::into);
 
     Ok(())
 }
 
 fn metadata_thing<'info>(
-    // ctx: CpiContext<'_, '_, '_, 'info, MetaCtx<'info>>,
     token_name: String,
     token_symbol: String,
     token_uri: String,
@@ -101,17 +97,25 @@ fn metadata_thing<'info>(
     rent: AccountInfo<'info>,
     signer_seed: &[&[&[u8]]],
 ) -> Result<()> {
+    let mut creators: Vec<Creator> = Vec::<Creator>::new();
+    let creator: Creator = Creator {
+        address: mint.key(),
+        verified: true,
+        share: 100,
+    };
+
+    creators.push(creator);
+
     let token_data: DataV2 = DataV2 {
         name: token_name.clone(),
         symbol: token_symbol,
         uri: token_uri,
         seller_fee_basis_points: token_tax,
-        creators: None,
+        creators: Some(creators),
         collection: None,
         uses: None,
     };
 
-    // Create the metadata accounts
     let metadata_ctx = CpiContext::new_with_signer(
         token_metadata_program,
         CreateMetadataAccountsV3 {
@@ -123,7 +127,7 @@ fn metadata_thing<'info>(
             system_program,
             rent,
         },
-        signer_seed, // Keep the signer seeds from the original context
+        signer_seed,
     );
 
     create_metadata_accounts_v3(metadata_ctx, token_data, false, true, None)?;
