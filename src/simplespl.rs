@@ -6,8 +6,6 @@ use anchor_lang::{solana_program, Result};
 use anchor_lang::{Key, ToAccountInfo};
 use mpl_token_metadata::types::DataV2;
 use solana_program::program::invoke_signed;
-// use solana_program::rent::Rent;
-// use solana_program::sysvar::Sysvar;
 pub use spl_token::ID;
 
 use crate::metadata::{create_metadata_accounts_v3, CreateMetadataAccountsV3};
