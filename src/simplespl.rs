@@ -37,7 +37,7 @@ use crate::metadata::{create_metadata_accounts_v3, CreateMetadataAccountsV3};
 /// # Example
 ///
 /// ```rust
-/// use my_crate::mint_simple;
+/// use simplespl::mint_simple;
 /// use anchor_lang::solana_program::account_info::AccountInfo;
 ///
 /// let result = mint_simple(
@@ -108,9 +108,8 @@ pub fn mint_simple<'info>(
         &ix,
         &[mint.clone(), to.clone(), owner.clone(), token_program],
         &[signer_seeds],
-    )?;
-
-    Ok(())
+    )
+    .map_err(Into::into)
 }
 
 /// Creates metadata for a token using the `mpl_token_metadata` program.
@@ -138,7 +137,7 @@ pub fn mint_simple<'info>(
 /// # Example
 ///
 /// ```rust
-/// use my_crate::metadata_thing;
+/// use simplespl::metadata_thing;
 /// use anchor_lang::solana_program::account_info::AccountInfo;
 ///
 /// metadata_thing(
@@ -205,9 +204,7 @@ fn metadata_thing<'info>(
         signer_seed,
     );
 
-    create_metadata_accounts_v3(metadata_ctx, token_data, false, true, None)?;
-
-    Ok(())
+    create_metadata_accounts_v3(metadata_ctx, token_data, false, true, None).map_err(Into::into)
 }
 
 /// Transfers SPL tokens from one account to another.
@@ -230,7 +227,7 @@ fn metadata_thing<'info>(
 /// # Example
 ///
 /// ```rust
-/// use my_crate::transfer_simple;
+/// use simplespl::transfer_simple;
 /// use anchor_lang::solana_program::account_info::AccountInfo;
 ///
 /// transfer_simple(
@@ -265,7 +262,64 @@ pub fn transfer_simple<'info>(
         &ix,
         &[mint, destination_pubkey, authority_pubkey, token_program_id],
         &[signer_seeds],
+    )
+    .map_err(Into::into)
+}
+
+/// Burns SPL tokens from an account.
+///
+/// This function allows you to burn (destroy) a specified number of SPL tokens from
+/// a source account. The transaction is signed using the provided `signer_seeds`.
+///
+/// # Arguments
+///
+/// * `mint` - The mint account of the token.
+/// * `token_program_id` - The token program account (usually `spl_token`).
+/// * `source_pubkey` - The account from which tokens will be burned.
+/// * `authority_pubkey` - The account authorized to burn the tokens.
+/// * `amount` - The amount of tokens to burn.
+/// * `signer_seeds` - A slice of slices of seeds for signing the transaction.
+///
+/// # Example
+///
+/// ```rust
+/// use simplespl::burn_simple;
+/// use anchor_lang::solana_program::account_info::AccountInfo;
+///
+/// burn_simple(
+///     mint_account_info,
+///     token_program_id,
+///     source_account_info,
+///     authority_account_info,
+///     1000, // Burn 1000 tokens
+///     &[&signer_seeds],
+/// ).unwrap();
+/// ```
+pub fn burn_simple<'info>(
+    mint: AccountInfo<'info>,
+    token_program_id: AccountInfo<'info>,
+    source_pubkey: AccountInfo<'info>,
+    authority_pubkey: AccountInfo<'info>,
+    amount: u64,
+    signer_seeds: &[&[u8]],
+) -> Result<()> {
+    let ix = spl_token::instruction::burn(
+        &token_program_id.key(),
+        &source_pubkey.key(),
+        &mint.key(),
+        &authority_pubkey.key(),
+        &[],
+        amount,
     )?;
 
-    Ok(())
+    invoke_signed(
+        &ix,
+        &[
+            source_pubkey.clone(),
+            mint.clone(),
+            authority_pubkey.clone(),
+        ],
+        &[signer_seeds],
+    )
+    .map_err(Into::into)
 }

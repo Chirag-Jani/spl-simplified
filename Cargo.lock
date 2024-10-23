@@ -2123,7 +2123,7 @@ dependencies = [
 
 [[package]]
 name = "spl-simplified"
-version = "0.2.7"
+version = "0.2.8"
 dependencies = [
  "anchor-lang",
  "borsh 0.9.3",

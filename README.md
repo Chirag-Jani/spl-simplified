@@ -1,8 +1,12 @@
 # SPL Token Helper Crate
 
-**Status:** 🚧 Under Development 🚧
+**Status:** ✅ Initial Version Released ✅
 
-This crate simplifies the process of creating SPL tokens on the Solana blockchain by providing a user-friendly abstraction layer. Our goal is to streamline the token creation process with minimal setup, while also offering flexibility for advanced users.
+This crate simplifies the process of creating SPL tokens on the Solana blockchain by providing a user-friendly abstraction layer. Our goal is to streamline the token creation process with minimal setup while also offering flexibility for advanced users. You can use the following functions:
+
+- `mint_simple`: Mint SPL tokens with associated metadata.
+- `transfer_simple`: Transfer SPL tokens between accounts.
+- `burn_simple`: Burn SPL tokens from an account.
 
 ## Features
 
@@ -10,6 +14,7 @@ This crate simplifies the process of creating SPL tokens on the Solana blockchai
 - **Manual Setup Options:** Advanced users can manually configure token parameters and metadata through the provided functions.
 - **Token Transfer Support:** Transfer SPL tokens between accounts using a simplified interface.
 - **Metadata Integration:** Automatically creates token metadata using the `mpl_token_metadata` program, with support for custom metadata attributes like name, symbol, URI, and seller fees.
+- **Token Burning:** Burn SPL tokens from an account with ease.
 - **Developer-Friendly:** The crate is modular and well-documented, making it easy to integrate into existing Solana projects.
 
 ## Usage
@@ -22,7 +27,8 @@ The `mint_simple` function allows you to mint SPL tokens and automatically creat
 use spl_token_helper::mint_simple;
 use anchor_lang::solana_program::account_info::AccountInfo;
 
-mint_simple(
+// Mint SPL tokens with metadata
+let result = mint_simple(
     "TokenName".to_string(),
     "TKN".to_string(),
     "https://example.com/token-metadata".to_string(),
@@ -50,7 +56,8 @@ The `transfer_simple` function lets you transfer SPL tokens between accounts usi
 ```rust
 use spl_token_helper::transfer_simple;
 
-transfer_simple(
+// Transfer SPL tokens between accounts
+let result = transfer_simple(
     mint_account_info,
     token_program_account_info,
     source_pubkey,
@@ -60,6 +67,28 @@ transfer_simple(
     &[&signer_seeds],
 ).unwrap();
 ```
+
+### Burning SPL Tokens
+
+The `burn_simple` function allows you to burn (destroy) SPL tokens from a specified account.
+
+```rust
+use spl_token_helper::burn_simple;
+
+// Burn SPL tokens from an account
+let result = burn_simple(
+    mint_account_info,
+    token_program_id,
+    source_pubkey,
+    authority_account_info,
+    500, // Burn 500 tokens
+    &[&signer_seeds],
+).unwrap();
+```
+
+## Example Implementations
+
+You can find example implementations of each version of this crate in the [spl-simplified-demo](https://github.com/Chirag-Jani/spl-simplified-demo) repository. Check specific commits for version numbers included in the messages, such as "feat: demo v0.2.8".
 
 ## Contributing
 
